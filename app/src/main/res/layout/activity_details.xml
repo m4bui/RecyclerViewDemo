@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/artist_view"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                app:layout_aspectRatio="178%"
+                tools:background="@color/pink"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/bottom_up_gradient"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/music_button">
+
+                <TextView
+                    android:id="@+id/on_tour_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/white"
+                    tools:text="On Tour"/>
+
+                <TextView
+                    android:id="@+id/upcoming_dates_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/white"
+                    tools:text="Upcoming Dates"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/music_button"
+                android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                tools:background="@color/colorPrimary"/>
+
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/track_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/track_artist" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/ppl_tracking_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text= "number of people tracking"
+                android:paddingLeft="8dp"
+                android:layout_alignParentLeft="true"/>
+
+            <TextView
+                android:id="@+id/viewall_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_all"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

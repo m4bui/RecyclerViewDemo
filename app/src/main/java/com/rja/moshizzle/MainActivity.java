@@ -16,21 +16,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ImageAdapter imageAdapter;
-    private SwipeRefreshLayout refreshLayout;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
+    private ImageAdapter mImageAdapter;
+    private SwipeRefreshLayout mRefreshLayout;
+    private EditText mEditText;
+    private Button mButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(View view) {
+
             }
         });
 
@@ -55,16 +59,25 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_main);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_main);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
-                downloadData();
+                downloadData(mEditText.getText().toString());
             }
 
         });
+        mEditText = (EditText) findViewById(R.id.main_text);
+        mButton = (Button) findViewById(R.id.main_search_button);
 
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadData(mEditText.getText().toString());
+
+            }
+        });
         setUpList();
     }
 
@@ -72,10 +85,10 @@ public class MainActivity extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        this.imageAdapter = new ImageAdapter();
-        recyclerView.setAdapter(imageAdapter);
+        this.mImageAdapter = new ImageAdapter(getBaseContext());
+        recyclerView.setAdapter(mImageAdapter);
 
-        downloadData();
+        downloadData("Drake");
     }
 
     @Override
@@ -83,30 +96,48 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void downloadData() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.giphy.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    public void downloadData(final String artistName) {
+        ApiHelper apiHelper = new ApiHelper();
+//        apiHelper.getGifs(new Callback<GifyApiResponse>() {
+//
+//            @Override
+//            public void onResponse(Call<GifyApiResponse> call, Response<GifyApiResponse> response) {
+//                if(response.isSuccessful()) {
+//                    List<GifyApiResponse.GifyInfo> cellInfos = response.body().gifyInfos;
+//                    mImageAdapter.setItem(getBaseContext(), cellInfos);
+//                }
+//
+//                mRefreshLayout.setRefreshing(false);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<GifyApiResponse> call, Throwable t) {
+//                Log.e("Retrofit", "error", t);
+//
+//                mRefreshLayout.setRefreshing(false);
+//            }
+//        });
 
-        GifyApi gifyApi = retrofit.create(GifyApi.class);
-        gifyApi.getRandomGifs().enqueue(new Callback<GifyApiResponse>() {
-
+        apiHelper.getBandsintownImage(artistName, new Callback<List<BandsintownEvent>>() {
             @Override
-            public void onResponse(Call<GifyApiResponse> call, Response<GifyApiResponse> response) {
+            public void onResponse(Call<List<BandsintownEvent>> call, Response<List<BandsintownEvent>> response) {
                 if(response.isSuccessful()) {
-                    List<GifyApiResponse.GifyInfo> cellInfos = response.body().gifyInfos;
-                    imageAdapter.setItem(getBaseContext(), cellInfos);
+                    mImageAdapter.setBandsintownEvents(artistName, response.body());
+                    Log.v(TAG, String.valueOf(response.body().size()));
+                }
+                else {
+                    mImageAdapter.setError();
+                    Log.v(TAG, "an error occurred in onResponse");
                 }
 
-                refreshLayout.setRefreshing(false);
+                mRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onFailure(Call<GifyApiResponse> call, Throwable t) {
-                Log.e("Retrofit", "error", t);
-
-                refreshLayout.setRefreshing(false);
+            public void onFailure(Call<List<BandsintownEvent>> call, Throwable t) {
+                Log.e(TAG, "api error getting bandsintown events", t);
+                mImageAdapter.setError();
+                mRefreshLayout.setRefreshing(false);
             }
         });
     }

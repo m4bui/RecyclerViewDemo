@@ -10,9 +10,35 @@
     tools:context="com.rja.moshizzle.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/main_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/search"/>
+
+        <EditText
+            android:id="@+id/main_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/main_search_button"
+            android:background="@color/pink"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_above="@+id/main_recycler_view"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/main_search_button"/>
+
+    </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>
